@@ -6,20 +6,6 @@ import socket
 HOST = '127.0.0.1'
 PORT = 2000
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
-
-
-
 def ping(host):
     """
     Returns True if host (str) responds to a ping request.
@@ -34,4 +20,19 @@ def ping(host):
 
     return subprocess.call(command) == 0
 
-ping("google.com")
+
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen()
+    conn, addr = s.accept()
+    with conn:
+        print('Connected by', addr)
+        while True:
+            data = conn.recv(1024)
+            if not data:
+                break
+            pingResult = ping(data) 
+            #conn.sendall(bytes(pingResult, 'utf-8'))
+
+
