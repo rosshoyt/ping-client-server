@@ -2,7 +2,7 @@ import subprocess
 import socket
 
 HOST = '127.0.0.1'
-PORT = 2000
+PORT = 10800
 
 def ping(hostToPing):
     """
