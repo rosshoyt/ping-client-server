@@ -1,6 +1,4 @@
-import platform    # For getting the operating system name
-import subprocess  # For executing a shell command
-
+import subprocess
 import socket
 
 HOST = '127.0.0.1'
@@ -20,8 +18,6 @@ def ping(hostToPing):
 
     return result
 
-
-
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -34,5 +30,3 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 break
             pingResult = ping(data) 
             conn.sendall(bytes('all set', 'utf-8'))
-
-
