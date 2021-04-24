@@ -13,11 +13,9 @@ def parsePingResult(result):
     """
     TODO handle error message in std err
     """
-    #print(result.stdout)
-    #print(result.stderr)
 
     pingResult = PingResult()
-    print()
+    
     pingResult.numPacketsTransmitted = re.search("(\d+)(?=\s*packets transmitted)", result.stdout).group(0)
     pingResult.numPacketsRecieved = re.search("(\d+)(?=\s*received)", result.stdout).group(0)
     pingResult.percentPacketLoss = re.search("(\d+)(?=\s*% packet loss)", result.stdout).group(0)

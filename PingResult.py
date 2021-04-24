@@ -5,3 +5,4 @@ class PingResult:
     numPacketsRecieved = 0
     percentPacketLoss = -1
     averageRTT = -1
+
