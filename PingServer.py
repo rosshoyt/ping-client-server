@@ -1,22 +1,36 @@
 import subprocess
 import socket
+import json
+from _thread import *
+from PingResult import PingResult
 
 HOST = '127.0.0.1'
 PORT = 10800
+NUM_PINGS = '20'
 
-def ping(hostToPing):
+def parsePingResult(result):
     """
-    Pings the requested domain-name 20 times
-    Prints and returns the results of the ping request, including any error messages
     """
-    
-    # Ping the domain 20 times and store the result
-    result = subprocess.run(['ping', '-c', '20', '-n', hostToPing], stderr=subprocess.PIPE, encoding='utf-8')
-
     print(result.stdout)
     print(result.stderr)
 
-    return result
+    pingResult = PingResult()
+    pingResult.numPacketsRecieved = 10
+    pingResult.numPacketsTransmitted = 10
+    pingResult.averageRTT = 100
+
+    return json.dumps(pingResult.__dict__)
+
+
+def ping(hostToPing):
+    """
+    Pings the requested domain-name NUM_PING times
+    Prints and returns the results of the ping request, including any error messages
+    """
+    # Ping the domain 20 times, parse and return the result
+    result = subprocess.run(['ping', '-c', NUM_PINGS, '-n', hostToPing], stderr=subprocess.PIPE, encoding='utf-8')
+    return parsePingResult(result)
+
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
@@ -29,4 +43,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if not data:
                 break
             pingResult = ping(data) 
-            conn.sendall(bytes('all set', 'utf-8'))
+            conn.sendall(bytes(pingResult, 'utf-8'))
