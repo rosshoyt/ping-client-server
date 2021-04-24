@@ -28,7 +28,7 @@ def ping(hostToPing):
     Prints and returns the results of the ping request, including any error messages
     """
     # Ping the domain 20 times, parse and return the result
-    result = subprocess.run(['ping', '-c', NUM_PINGS, '-n', hostToPing], stderr=subprocess.PIPE, encoding='utf-8')
+    result = subprocess.run(['ping', '-c', NUM_PINGS, '-n', hostToPing], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
     return parsePingResult(result)
 
 
