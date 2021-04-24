@@ -1,23 +1,40 @@
 import subprocess
 import socket
 import json
+import re
 from _thread import *
 from PingResult import PingResult
 
 HOST = '127.0.0.1'
 PORT = 10800
-NUM_PINGS = '20'
+NUM_PINGS = '3'
 
 def parsePingResult(result):
     """
+    TODO handle error message in std err
     """
-    print(result.stdout)
-    print(result.stderr)
+    #print(result.stdout)
+    #print(result.stderr)
 
     pingResult = PingResult()
-    pingResult.numPacketsRecieved = 10
-    pingResult.numPacketsTransmitted = 10
-    pingResult.averageRTT = 100
+    print()
+    pingResult.numPacketsTransmitted = re.search("(\d+)(?=\s*packets transmitted)", result.stdout).group(0)
+    pingResult.numPacketsRecieved = re.search("(\d+)(?=\s*received)", result.stdout).group(0)
+    pingResult.percentPacketLoss = re.search("(\d+)(?=\s*% packet loss)", result.stdout).group(0)
+
+    # Get decimal number before second to last slash (averageRTT)
+     # TODO get averageRTT from regex, e.g (\d+)(?=.*?\/.*)
+    slashCount = 0
+    charStack = []
+    for c in reversed(result.stdout):
+        if c == '/':
+            slashCount += 1
+        elif slashCount == 2:
+            charStack.insert(0,c)
+        if slashCount == 3:
+            break
+    
+    pingResult.averageRTT = ''.join(charStack)        
 
     return json.dumps(pingResult.__dict__)
 
