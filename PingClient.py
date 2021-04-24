@@ -1,6 +1,7 @@
 import socket
 import os, sys
 import json
+from PingResult import PingResult
 
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 10800        # The port used by the server
@@ -14,11 +15,14 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     data = s.recv(1024)
 
 # decode data
-strData = data.decode("utf-8")
-usrMessageStart = 'Ping ' + domainName + ' Results: '
-if 'ERROR' in strData:
-    print(usrMessageStart, 'error - could not connect to provided domain name')
-else:
-    print(usrMessageStart, repr(strData))
+pingResult = PingResult(**json.loads(data.decode("utf-8")))
+
+print('Ping Results: ' )
+print('Number of packets transmitted: ', pingResult.numPacketsTransmitted)
+# TODO handle error messages, format info for user
+# if 'ERROR' in strData:
+#     print()
+# else:
+#     print()
     
 
