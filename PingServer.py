@@ -24,7 +24,7 @@ def parsePingResult(result):
         if pingResult.percentPacketLoss == 100.0:
             pingResult.averageRTT = 'Not applicable: all packets lost'
         else: 
-            # Exctract averageRTT from the decimal number before second to last slash
+            # Extract averageRTT from the decimal number before second to last slash
             # TODO get averageRTT from regex, e.g (\d+)(?=.*?\/.*)
             slashCount = 0
             charStack = []
@@ -42,7 +42,6 @@ def parsePingResult(result):
 
     return json.dumps(pingResult.__dict__)
 
-
 def ping(hostToPing):
     """
     Pings the requested domain-name NUM_PING times
@@ -52,30 +51,28 @@ def ping(hostToPing):
     result = subprocess.run(['ping', '-c', NUM_PINGS, '-n', hostToPing], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
     return parsePingResult(result)
 
-def clientThread(conn, ip, port):
-    '''
-    function that a thread can use to communicate with a client
-    '''
+def clientThread(conn):
+    """
+    Function that a thread can use to communicate with a client
+    """
     with conn: 
-        print('Connected by', addr)
         while True:
             data = conn.recv(1024)
             if not data:
                 break
+            print("Pinging", data.decode('utf-8'))
             pingResult = ping(data) 
             conn.sendall(bytes(pingResult, 'utf-8'))
 
+# Start the server, listen for connections, and spawn a thread when a connection occurs
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen(6) # queue up to 6 requests
     while True:
         conn, addr = s.accept()
-        
-        ip, port = str(addr[0]), str(addr[1])
-        print("A client connected with ip:port " + ip + ":" + port)
-
+        print('Connected by', addr)
         try:
-            Thread(target=clientThread, args=(conn, ip, port)).start()
+            Thread(target=clientThread, args=(conn,)).start()
         except:
             print("Thread did not start.")
             traceback.print_exc()
