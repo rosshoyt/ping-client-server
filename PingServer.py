@@ -2,12 +2,12 @@ import subprocess
 import socket
 import json
 import re
-from _thread import *
+from threading import Thread
 from PingResult import PingResult
 
 HOST = '127.0.0.1'
 PORT = 10800
-NUM_PINGS = '3'
+NUM_PINGS = '20'
 
 def parsePingResult(result):
     """
@@ -52,11 +52,10 @@ def ping(hostToPing):
     result = subprocess.run(['ping', '-c', NUM_PINGS, '-n', hostToPing], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
     return parsePingResult(result)
 
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
+def clientThread(conn, ip, port):
+    '''
+    function that a thread can use to communicate with a client
+    '''
     with conn: 
         print('Connected by', addr)
         while True:
@@ -65,3 +64,19 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 break
             pingResult = ping(data) 
             conn.sendall(bytes(pingResult, 'utf-8'))
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind((HOST, PORT))
+    s.listen(6) # queue up to 6 requests
+    while True:
+        conn, addr = s.accept()
+        
+        ip, port = str(addr[0]), str(addr[1])
+        print("A client connected with ip:port " + ip + ":" + port)
+
+        try:
+            Thread(target=clientThread, args=(conn, ip, port)).start()
+        except:
+            print("Thread did not start.")
+            traceback.print_exc()
+    soc.close()
