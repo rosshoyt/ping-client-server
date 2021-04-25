@@ -22,7 +22,7 @@ pingResult = PingResult(**json.loads(data.decode("utf-8")))
 
 # inform user TODO move print message logic into PingResult class
 print('Ping Results:' )
-print('Domain name tested was', domainName)
+print('Domain name tested was', pingResult.domainName)
 if pingResult.errorOccured():
     print('Error - cannot resolve domain name to IP address. (', pingResult.errorMsg, ')')
 else:
