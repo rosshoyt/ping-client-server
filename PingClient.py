@@ -16,13 +16,11 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
 # decode data
 pingResult = PingResult(**json.loads(data.decode("utf-8")))
-
-print('Ping Results: ' )
-print('Number of packets transmitted: ', pingResult.numPacketsTransmitted)
-# TODO handle error messages, format info for user
-# if 'ERROR' in strData:
-#     print()
-# else:
-#     print()
-    
-
+print('Ping Results:' )
+print('Domain name tested was', domainName)
+if pingResult.errorOccured():
+    print('Error - cannot resolve domain name to IP address. (',pingResult.errorMsg, ')')
+else:
+    print(pingResult.numPacketsTransmitted, 'pings were sent with', pingResult.numPacketsRecieved, 'pings succeeding.')
+    print(pingResult.percentPacketLoss, '% of packets were lost.')
+    print('Average RTT was', float(pingResult.averageRTT) / 1000, 'seconds')
