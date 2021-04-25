@@ -22,11 +22,18 @@
 * ### All messages are all of size 1024 bytes
 ## 4 Request Message
 * ### A request message from a client to a server contains  domain name or IP Address to ping. 
-* #### Example Request:
+#### Example Request:
 "www.google.com"
 ## 5 Response Message
-* ### After receiving and interpreting a request message, a server responds with a  response message formatted in JSON:
-* #### Example Response:
+* ### After receiving and interpreting a request message, a server responds with a  response message formatted in JSON.
+### 5.1 Response Content:
+* ### Domain name pinged
+* ### Error messages that occured (empty string if no errors occured)
+* ### Number of packets transmitted
+* ### Number of packets recieved
+* ### Percentage of packets lost
+* ### Average RTT (Round-Trip-Time) in milliseconds
+#### Example Response:
 {"domainName": "www.google.com", "errorMsg": "", "numPacketsTransmitted": 20, "numPacketsRecieved": 20, "percentPacketLoss": 0.0, "averageRTT": "9.059"}
 #
 ## Protocol Use Case Example:
