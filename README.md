@@ -27,7 +27,7 @@
 ## 5 Response Message
 * ### After receiving and interpreting a request message, a server responds with a  response message formatted in JSON:
 * #### Example Response:
-{"domainName": "", "errorMsg": "", "numPacketsTransmitted": 20, "numPacketsRecieved": 20, "percentPacketLoss": 0.0, "averageRTT": "9.059"}
+{"domainName": "www.google.com", "errorMsg": "", "numPacketsTransmitted": 20, "numPacketsRecieved": 20, "percentPacketLoss": 0.0, "averageRTT": "9.059"}
 #
 ## Protocol Use Case Example:
 ### Server starts and opens TCP socket on port 10800
