@@ -14,8 +14,10 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.sendall(bytes(domainName, 'utf-8'))
     data = s.recv(1024)
 
-# decode data
+# decode data into PingResult class
 pingResult = PingResult(**json.loads(data.decode("utf-8")))
+
+# inform user TODO move display logic into PingResult class
 print('Ping Results:' )
 print('Domain name tested was', domainName)
 if pingResult.errorOccured():
@@ -23,4 +25,7 @@ if pingResult.errorOccured():
 else:
     print(pingResult.numPacketsTransmitted, 'pings were sent with', pingResult.numPacketsRecieved, 'pings succeeding.')
     print(pingResult.percentPacketLoss, '% of packets were lost.')
-    print('Average RTT was', float(pingResult.averageRTT) / 1000, 'seconds')
+    if pingResult.percentPacketLoss < 100.0:
+        print('Average RTT was', float(pingResult.averageRTT) / 1000, 'seconds')
+    else:
+        print('Average RTT is not applicable: all packets lost.')
