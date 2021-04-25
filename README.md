@@ -37,11 +37,11 @@
 {"domainName": "www.google.com", "errorMsg": "", "numPacketsTransmitted": 20, "numPacketsRecieved": 20, "percentPacketLoss": 0.0, "averageRTT": "9.059"}
 #
 ## Protocol Use Case Example:
-### Server starts and opens TCP socket on port 10800
-### Client initiates socket connection with Server over port 10800
-### Client sends server a request message with domain name passed in by client's user
-### Server attempts to ping the address 20 times
-### Server parses results returned by host OS
-### Server sends JSON data via socket to client 
-### Client recieves byte data and displays info message to user
-### Client closes the connection with the server (Server remains open for other clients to connect)
+### 1. Server opens TCP socket on port 10800
+### 2. Client initiates socket connection with Server over port 10800
+### 3. Client sends server a request message with domain name passed in by client's user
+### 4. Server attempts to ping the address 20 times
+### 5. Server parses results returned by host OS
+### 6. Server sends JSON data via socket to client 
+### 7. Client recieves decodes JSON response data and displays info message to user
+### 8. Client closes the connection with the server (Server remains open for other clients to connect)
