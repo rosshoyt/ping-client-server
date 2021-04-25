@@ -6,3 +6,10 @@ class PingResult:
         self.numPacketsRecieved = numPacketsRecieved
         self.percentPacketLoss = percentPacketLoss
         self.averageRTT = averageRTT
+
+    def errorOccured(self):
+        '''
+        Method that returns true if there was an error when pinging.
+        True if error message has any length > 0, false otherwise
+        '''
+        return len(self.errorMsg) > 0
