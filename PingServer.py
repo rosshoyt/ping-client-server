@@ -9,11 +9,11 @@ HOST = '127.0.0.1'
 PORT = 10800
 NUM_PINGS = '20'
 
-def parsePingResult(result):
+def parsePingResult(result, domain):
     """
     Returns a JSON version of a PingResult class containing data about the PING results
     """
-    pingResult = PingResult()
+    pingResult = PingResult(domainName = domain.decode('UTF-8'))
     # If no error msg, we'll parse the data fields for the ping result container class
     if len(result.stderr) == 0:
         pingResult.numPacketsTransmitted = int(re.search("(\d+)(?=\s*packets transmitted)", result.stdout).group(0))
@@ -45,13 +45,13 @@ def parsePingResult(result):
 def ping(hostToPing):
     """
     Pings the requested domain-name NUM_PING times
-    Prints and returns the results of the ping request, including any error messages
+    Returns the results of the ping request, including any error messages
     """
     # Ping the domain 20 times, parse and return the result
     result = subprocess.run(['ping', '-c', NUM_PINGS, '-n', hostToPing], stdout=subprocess.PIPE, stderr=subprocess.PIPE, encoding='utf-8')
-    return parsePingResult(result)
+    return parsePingResult(result, hostToPing)
 
-def clientThread(conn):
+def clientThread(conn, addr):
     """
     Function that a thread can use to communicate with a client
     """
@@ -60,8 +60,9 @@ def clientThread(conn):
             data = conn.recv(1024)
             if not data:
                 break
-            print("Pinging", data.decode('utf-8'))
-            pingResult = ping(data) 
+            print('Pinging', data.decode('utf-8'), '...')
+            pingResult = ping(data)
+            print('Sending response with ping results to client', addr)
             conn.sendall(bytes(pingResult, 'utf-8'))
 
 # Start the server, listen for connections, and spawn a thread when a connection occurs
@@ -70,9 +71,9 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.listen(6) # queue up to 6 requests
     while True:
         conn, addr = s.accept()
-        print('Connected by', addr)
+        print('Connected to', addr)
         try:
-            Thread(target=clientThread, args=(conn,)).start()
+            Thread(target=clientThread, args=(conn, addr)).start()
         except:
             print("Thread did not start.")
             traceback.print_exc()
